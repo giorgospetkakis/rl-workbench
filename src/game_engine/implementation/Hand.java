@@ -1,6 +1,5 @@
 package game_engine.implementation;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.NoSuchElementException;
@@ -10,8 +9,6 @@ import java.util.NoSuchElementException;
  * The Hand class represents a sequence of cards a Player holds.
  */
 public class Hand extends PlayerComponent {
-
-    private static final String ALIAS = "HAND";
 
     private LinkedHashMap<Integer, Card> cardsInHand;
     private int maxHandSize = 100;
@@ -30,6 +27,7 @@ public class Hand extends PlayerComponent {
      */
     public Hand(){
         this.cardsInHand = new LinkedHashMap<>(maxHandSize);
+        this.type = "Hand";
     }
 
     /**
@@ -42,17 +40,15 @@ public class Hand extends PlayerComponent {
     /**
      * Adds a card to the hand.
      * @param card the card being added
-     * @return true if card added, false if at max hand capacity
      */
-    public boolean addCard(Card card){
-        // Game should not continue running if hand-size exceeds max.
-        assert(cardsInHand.size() <= maxHandSize);
-        if (cardsInHand.size() == maxHandSize) {
-            return false;
-        } else {
+    public void addCard(Card card){
+        if (cardsInHand.size() < maxHandSize)
             cardsInHand.put(card.hashCode(), card);
-            return true;
-        }
+    }
+
+    public void drawFrom(Deck deck){
+        if (cardsInHand.size() > maxHandSize)
+            addCard(deck.draw());
     }
 
     /**
